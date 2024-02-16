@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
 import './App.css';
-import { TaskType, Todolist } from './Todolist';
-import { AddItemForm } from './AddItemForm';
+import {TaskType, Todolist} from './Todolist';
+import {AddItemForm} from './AddItemForm';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Menu } from '@mui/icons-material';
+import {Menu} from '@mui/icons-material';
 import {
     addTodolistAC,
     changeTodolistFilterAC,
@@ -20,13 +20,12 @@ import {
 import {
     addTaskAC,
     addTaskTC,
-    changeTaskStatusAC,
     updateTaskAC,
     removeTaskAC,
     removeTaskTC
 } from './state/tasks-reducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppRootStateType } from './state/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppRootStateType} from './state/store';
 import {todolistAPI} from "./api/todolists-api";
 import {ThunkDispatch} from "redux-thunk";
 import {AnyAction} from "redux";
@@ -50,11 +49,10 @@ function App() {
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const dispatch: ThunkDispatch<AppRootStateType, unknown, AnyAction> = useDispatch();
 
-    useEffect(()=> {
+    useEffect(() => {
             dispatch(setTodolistTC())
         }
-        ,[])
-
+        , [])
 
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
@@ -66,12 +64,12 @@ function App() {
     }, []);
 
     const changeStatus = useCallback(function (id: string, isDone: boolean, todolistId: string) {
-        const action = changeTaskStatusAC(id, isDone, todolistId);
+        const action = updateTaskAC(id, {isDone}, todolistId);
         dispatch(action);
     }, []);
 
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        const action = updateTaskAC(id, newTitle, todolistId);
+        const action = updateTaskAC(id, {title: newTitle}, todolistId);
         dispatch(action);
     }, []);
 
