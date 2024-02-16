@@ -15,12 +15,14 @@ import {
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
-    removeTodolistAC, setTodolistAC, setTodolistTC
+    removeTodolistAC, setTodolistAC, setTodolistTC,
 } from './state/todolists-reducer';
 import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from './state/tasks-reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootStateType } from './state/store';
 import {todolistAPI} from "./api/todolists-api";
+import {ThunkDispatch} from "redux-thunk";
+import {AnyAction} from "redux";
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
@@ -39,10 +41,10 @@ function App() {
 
     const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const dispatch = useDispatch();
+    const dispatch: ThunkDispatch<AppRootStateType, unknown, AnyAction> = useDispatch();
 
     useEffect(()=> {
-            setTodolistTC()(dispatch)
+            dispatch(setTodolistTC())
         }
         ,[])
 

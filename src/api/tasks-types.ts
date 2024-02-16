@@ -1,4 +1,4 @@
-export type TaskApiTypes = {
+export type TaskResponseTypes = {
     id: string
     title: string
     description: null | string

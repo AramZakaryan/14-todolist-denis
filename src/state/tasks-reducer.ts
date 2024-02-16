@@ -1,7 +1,10 @@
-import {TaskType} from '../Todolist';
 import {v1} from 'uuid';
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from './todolists-reducer';
 import {TasksStateType} from '../App';
+import {Dispatch} from "redux";
+import {taskstAPI} from "../api/tasks-api";
+import {TaskResponseTypes} from "../api/tasks-types";
+import {TaskType} from "../Todolist";
 
 export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',
@@ -29,6 +32,12 @@ export type ChangeTaskTitleActionType = {
     title: string
 }
 
+export type SetTasksType = {
+    type: 'SET-TASKS'
+    todolistId: string
+    tasks: TaskResponseTypes[]
+}
+
 type ActionsType = RemoveTaskActionType
     | AddTaskActionType
     | ChangeTaskStatusActionType
@@ -36,6 +45,7 @@ type ActionsType = RemoveTaskActionType
     | AddTodolistActionType
     | RemoveTodolistActionType
     | SetTodolistsActionType
+    | SetTasksType
 
 const initialState: TasksStateType = {}
 
@@ -96,10 +106,34 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             // return copyState
             return action.todolists.reduce((acc, tl) => ({...acc, [tl.id]: []}), {})
         }
+        case "SET-TASKS": {
+            return {
+                ...state,
+                [action.todolistId]:action.tasks.map(t=>({...t,isDone: t.status===2 }as TaskType))
+            }
+        }
         default:
             return state;
     }
 }
+
+
+
+// export type TaskResponseTypes = {
+//     id: string
+//     title: string
+//     description: null | string
+//     todoListId: string
+//     order: number
+//     status: number
+//     priority: number
+//     startDate: null | Date
+//     deadline: null | Date
+//     addedDate: Date
+// }
+
+
+// ACTION CREATORS
 
 export const removeTaskAC = (taskId: string, todolistId: string): RemoveTaskActionType => {
     return {type: 'REMOVE-TASK', taskId: taskId, todolistId: todolistId}
@@ -113,4 +147,14 @@ export const changeTaskStatusAC = (taskId: string, isDone: boolean, todolistId: 
 export const changeTaskTitleAC = (taskId: string, title: string, todolistId: string): ChangeTaskTitleActionType => {
     return {type: 'CHANGE-TASK-TITLE', title, todolistId, taskId}
 }
+export const setTasksAC = (todolistId: string, tasks: TaskResponseTypes[]): SetTasksType => {
+    return {type: 'SET-TASKS', todolistId, tasks}
+}
 
+
+// THUNK CREATORS
+
+export const setTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
+    taskstAPI.getTasks(todolistId)
+        .then(res => dispatch(setTasksAC(todolistId,res.data.items)))
+}

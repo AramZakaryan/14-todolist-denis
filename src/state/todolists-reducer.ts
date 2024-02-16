@@ -95,7 +95,7 @@ export const setTodolistAC = (todolists: TodolistResponseType[]): SetTodolistsAc
 
 // THUNK CREATORS
 
-export const setTodolistTC = ()=> (dispatch:Dispatch) => {
+export const setTodolistTC =() =>(dispatch:Dispatch) => {
     todolistAPI.getTodolists()
         .then(res=>dispatch(setTodolistAC(res.data)))
 }
