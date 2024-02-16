@@ -1,18 +1,25 @@
 import {instance} from "./instance";
 import {TodolistResponseUniversalType, TodolistResponseType} from "./todolists-types";
+import {AxiosResponse} from "axios";
 
 
 export const todolistAPI = {
     getTodolists() {
-        return instance.get<TodolistResponseType[]>("")
+        return instance.get<null, AxiosResponse<TodolistResponseType[]>>
+        ("")
     },
     createTodolist(newTodolistTitle: string) {
-        return instance.post<TodolistResponseUniversalType<{ item: TodolistResponseType }>>("", {title: newTodolistTitle})
+        return instance.post<null, AxiosResponse<TodolistResponseUniversalType<{ item: TodolistResponseType }>>, {
+            title: string
+        }>
+        ("", {title: newTodolistTitle})
     },
-    deleteTodolist(todoistId: string) {
-        return instance.delete<TodolistResponseUniversalType>(`${todoistId}`)
+    deleteTodolist(todolistId: string) {
+        return instance.delete<null, AxiosResponse<TodolistResponseUniversalType>>
+        (`${todolistId}`)
     },
     updateTodolist(todolistId: string, title: string) {
-        return instance.put<TodolistResponseUniversalType>(`${todolistId}`, {title: title});
+        return instance.put<null, AxiosResponse<TodolistResponseUniversalType>, { title: string }>
+        (`${todolistId}`, {title: title});
     }
 }

@@ -1,4 +1,4 @@
-export type TaskResponseTypes = {
+export type TaskResponseType = {
     id: string
     title: string
     description: null | string
