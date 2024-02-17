@@ -23,7 +23,7 @@ export type UpdateTaskActionType = {
     type: 'UPDATE-TASK',
     todolistId: string
     taskId: string
-    model:UpdateTaskModelType
+    model: TaskModelForACType
 }
 
 export type SetTasksType = {
@@ -54,7 +54,10 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
         case 'ADD-TASK': {
             return {
                 ...state,
-                [action.task.todoListId]: [{...action.task, isDone:action.task.status===2}, ...state[action.task.todoListId]
+                [action.task.todoListId]: [{
+                    ...action.task,
+                    isDone: action.task.status === 2
+                }, ...state[action.task.todoListId]
                 ]
             }
         }
@@ -121,11 +124,12 @@ export const addTaskAC = (task: TaskResponseType): AddTaskActionType => {
     return {type: 'ADD-TASK', task}
 }
 
-type UpdateTaskModelType = {
+type TaskModelForACType = {
     title?: string,
     isDone?: boolean
+    [key: string]: any
 }
-export const updateTaskAC = (taskId: string, model: UpdateTaskModelType, todolistId: string): UpdateTaskActionType => {
+export const updateTaskAC = (taskId: string, model: TaskModelForACType, todolistId: string): UpdateTaskActionType => {
     return {type: 'UPDATE-TASK', model, todolistId, taskId}
 }
 export const setTasksAC = (todolistId: string, tasks: TaskResponseType[]): SetTasksType => {
@@ -150,7 +154,32 @@ export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispa
         .then(res => dispatch(addTaskAC(res.data.data.item)))
 }
 
-export const updateTaskTC = (taskId: string, model: UpdateTaskModelType, todolistId: string) => (dispatch: Dispatch, getState: ()=>AppRootStateType) => {
-    taskstAPI.updateTasks(todolistId,taskId,task)
-        .then(res => dispatch(updateTaskAC(res.data.data.item)))
+export const updateTaskTC = (taskId: string, model: TaskModelForACType, todolistId: string) => (dispatch: Dispatch, getState: () => AppRootStateType) => {
+
+    //  Transformation "isDone" to "status"
+    if ("isDone" in model) {
+        model.status = model.isDone ? 2 : 0
+        delete model.isDone
+    }
+
+    let taskFromState = getState().tasks[todolistId].find(t => t.id === taskId)
+
+    if (taskFromState) {
+
+        const task = {
+            title: taskFromState.title,
+            description: null,
+            status: taskFromState?.isDone ? 2 : 0,
+            priority: 0,
+            startDate: null,
+            deadline: null,
+            ...model
+        }
+
+        taskstAPI.updateTasks(todolistId, taskId, task)
+            .then(res => dispatch(updateTaskAC(taskId, {
+                ...res.data.data.item,
+                isDone: res.data.data.item.status === 2
+            }, todolistId)))
+    }
 }

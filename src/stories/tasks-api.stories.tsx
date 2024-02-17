@@ -52,10 +52,10 @@ export const UpdateTasks = () => {
     const [state, setState] = useState<any>(null)
 
     useEffect(() => {
-        taskstAPI.updateTasks("c120798c-3062-4b8a-a1c9-0de81f13d59b",
-            "21875393-6c06-4a9a-a966-bd2d4cbe743b",
-            "Iroq vor Title")
-            .then(response => setState(response.data))
+        // taskstAPI.updateTasks("c120798c-3062-4b8a-a1c9-0de81f13d59b",
+        //     "21875393-6c06-4a9a-a966-bd2d4cbe743b",
+        //     "Iroq vor Title")
+        //     .then(response => setState(response.data))
     }, [])
 
 

@@ -1,5 +1,5 @@
 import {instance} from "./instance";
-import {TaskResponseType, TaskResponseUniversalType} from "./tasks-types";
+import {TaskModelForApiType, TaskResponseType, TaskResponseUniversalType} from "./tasks-types";
 import {AxiosResponse} from "axios";
 
 
@@ -16,10 +16,8 @@ export const taskstAPI = {
         return instance.delete<null, AxiosResponse<TaskResponseUniversalType>>
         (`${todolistId}/tasks/${taskId}`)
     },
-    updateTasks(todolistId: string, taskId: string, newTaskTitle: string) {
-        return instance.put<null, AxiosResponse<TaskResponseUniversalType>, { title: string }>
-        (`${todolistId}/tasks/${taskId}`, {
-            title: newTaskTitle
-        })
+    updateTasks(todolistId: string, taskId: string, taskForApi: TaskModelForApiType) {
+        return instance.put<null, AxiosResponse<TaskResponseUniversalType<{ item:TaskResponseType }>>, TaskModelForApiType>
+        (`${todolistId}/tasks/${taskId}`, taskForApi)
     },
 }

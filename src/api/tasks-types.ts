@@ -17,3 +17,20 @@ export type TaskResponseUniversalType<T = {}> = {
     fieldsErrors: string[]
     resultCode: number
 }
+
+export type TaskModelForApiType = {
+    // id: string
+    title: string
+    description: null | string
+    // todoListId: string
+    // order: number
+    status: number
+    priority: number
+    startDate: null | Date
+    deadline: null | Date
+    // addedDate: Date
+}
+
+
+
+
